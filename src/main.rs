@@ -1,3 +1,6 @@
+use restaurant_order::start_web_server;
+
+
 fn main() {
-    println!("Hello, world!");
+    start_web_server();
 }
