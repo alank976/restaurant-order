@@ -2,8 +2,12 @@ use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
 
 use actix_web::{App, HttpResponse, HttpServer, Responder, web};
+use actix_rt;
 
 use order_item::OrderItem;
+use std::sync::mpsc::channel;
+use std::thread;
+use actix_web::dev::Server;
 
 pub mod order_item;
 
@@ -50,17 +54,25 @@ pub struct WebServer {}
 impl WebServer {
     pub fn new() -> Self { WebServer {} }
 
-    pub fn start(&self) {
+    pub fn start(&self) -> Server {
         let shared_data = web::Data::new(OrderService::new());
-        HttpServer::new(move || {
-            App::new()
-                .register_data(shared_data.clone())
-                .configure(WebServer::table_scope_config)
-        })
-            .bind("127.0.0.1:8000")
-            .expect("Can not bind to port 8000")
-            .run()
-            .unwrap();
+
+        let (tx, rx) = channel();
+
+        thread::spawn(move || {
+            let sys = actix_rt::System::new("example");
+            let server = HttpServer::new(move || {
+                App::new()
+                    .register_data(shared_data.clone())
+                    .configure(WebServer::table_scope_config)
+            })
+                .bind("127.0.0.1:8000")
+                .expect("Can not bind to port 8000")
+                .start();
+            let _ = tx.send(server);
+            let _ = sys.run();
+        });
+        rx.recv().unwrap()
     }
 
     pub fn table_scope_config(cfg: &mut web::ServiceConfig) {

@@ -9,10 +9,10 @@ pub struct OrderItem {
 }
 
 impl OrderItem {
-    pub fn new(name: String, time_to_cook: Duration) -> Self {
+    pub fn new(name: String) -> Self {
         OrderItem {
             name,
-            time_to_cook,
+            time_to_cook: Duration::from_secs(60),
         }
     }
 }
