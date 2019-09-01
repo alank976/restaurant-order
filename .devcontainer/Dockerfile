@@ -15,6 +15,7 @@ ARG USER_GID=$USER_UID
 
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
+ENV RUST_BACKTRACE=1
 
 # Configure apt and install packages
 RUN apt-get update \

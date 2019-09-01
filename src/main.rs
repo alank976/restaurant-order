@@ -1,6 +1,8 @@
-use restaurant_order::start_web_server;
+use restaurant_order::WebServer;
 
 
 fn main() {
-    start_web_server();
+    let web_server = WebServer::new();
+    web_server.start();
 }
+
