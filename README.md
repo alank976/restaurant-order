@@ -22,5 +22,4 @@ The values are used with `Vector` because the food name can be duplicated by com
 
 
 ## TODOs
-- [ ] validate 1 <= table_id <= 100
 - [ ] test with >10 threads of clientsfetch
