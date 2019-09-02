@@ -1,9 +1,7 @@
 use std::sync::mpsc::channel;
 use std::thread;
 
-use actix_rt;
 use actix_web::{App, HttpResponse, HttpServer, Responder, web};
-use actix_web::dev::Server;
 
 use order_item::OrderItem;
 use order_service::OrderService;
@@ -17,30 +15,23 @@ pub struct WebServer {}
 impl WebServer {
     pub fn new() -> Self { WebServer {} }
 
-    pub fn start(&self) -> Server {
+    pub fn start(&self) {
         let shared_data = web::Data::new(OrderService::new());
 
-        let (tx, rx) = channel();
-
-        thread::spawn(move || {
-            let sys = actix_rt::System::new("example");
-            let server = HttpServer::new(move || {
-                App::new()
-                    .register_data(shared_data.clone())
-                    .service(
-                        web::scope("/tables/{id}")
-                            .route("/order-items", web::get().to(WebServer::handle_get_items))
-                            .route("/order-items", web::post().to(WebServer::handle_add_item))
-                            .route("/order-items/{name}", web::delete().to(WebServer::handle_delete_item)),
-                    )
-            })
-                .bind("127.0.0.1:8000")
-                .expect("Can not bind to port 8000")
-                .start();
-            let _ = tx.send(server);
-            let _ = sys.run();
-        });
-        rx.recv().unwrap()
+        HttpServer::new(move || {
+            App::new()
+                .register_data(shared_data.clone())
+                .service(
+                    web::scope("/tables/{id}")
+                        .route("/order-items", web::get().to(WebServer::handle_get_items))
+                        .route("/order-items", web::post().to(WebServer::handle_add_item))
+                        .route("/order-items/{name}", web::delete().to(WebServer::handle_delete_item)),
+                )
+        })
+            .bind("127.0.0.1:8000")
+            .expect("Can not bind to port 8000")
+            .run()
+            .unwrap();
     }
 
     fn handle_get_items(table_id: web::Path<u8>, stateful_service: web::Data<OrderService>) -> impl Responder {

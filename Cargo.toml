@@ -8,7 +8,6 @@ edition = "2018"
 
 [dependencies]
 actix-web = "1.0.7"
-actix-rt = "0.2.4"
 serde = "1.0.99"
 reqwest = "0.9.20"
 rand = "0.7"

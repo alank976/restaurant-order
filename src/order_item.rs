@@ -1,7 +1,7 @@
-use serde::Serialize;
-use serde::Deserialize;
 use std::time::Duration;
+
 use rand::Rng;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct OrderItem {
