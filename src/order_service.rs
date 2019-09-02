@@ -64,7 +64,6 @@ mod tests {
             .unwrap()
             .insert(10, vec![OrderItem::new("sushi".to_string())]);
 
-
         let items = svc.get_items(10);
         assert!(items.is_some());
         let items = items.unwrap();
@@ -102,7 +101,6 @@ mod tests {
                        .unwrap()
                        .name()
         );
-//todo check cook time range
     }
 
     #[test]
