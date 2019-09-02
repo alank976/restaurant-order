@@ -15,32 +15,49 @@ impl OrderService {
     }
 
     pub fn add(&self, table_id: u8, item: OrderItem) -> Result<(), ()> {
-        let mut items_by_table_id = self.0
-            .write()
-            .unwrap();
-        if let Some(items) = items_by_table_id.get_mut(&table_id) {
-            items.push(item);
-            Ok(())
-        } else {
-            items_by_table_id.insert(table_id, vec![item]);
-            Ok(())
+        match table_id {
+            1..=100 => {
+                let mut items_by_table_id = self.0
+                    .write()
+                    .unwrap();
+                if let Some(items) = items_by_table_id.get_mut(&table_id) {
+                    items.push(item);
+                    Ok(())
+                } else {
+                    items_by_table_id.insert(table_id, vec![item]);
+                    Ok(())
+                }
+            }
+            _ => Err(())
         }
     }
 
-    pub fn get_items(&self, table_id: u8) -> Option<Vec<OrderItem>> {
-        self.0
-            .read()
-            .unwrap()
-            .get(&table_id)
-            .map(|it| it.clone())
+    pub fn get_items(&self, table_id: u8) -> Result<Vec<OrderItem>, ()> {
+        match table_id {
+            1..=100 => Ok(
+                self.0
+                    .read()
+                    .unwrap()
+                    .get(&table_id)
+                    .map(|it| it.clone())
+                    .unwrap_or(vec![])
+            ),
+            _ => Err(())
+        }
     }
 
-    pub fn cancel_item(&self, table_id: u8, item_name: String) {
-        if let Some(items) = self.0
-            .write()
-            .unwrap()
-            .get_mut(&table_id) {
-            items.retain(|item| item_name != *item.name);
+    pub fn cancel_item(&self, table_id: u8, item_name: String) -> Result<(), ()> {
+        match table_id {
+            1..=100 => {
+                if let Some(items) = self.0
+                    .write()
+                    .unwrap()
+                    .get_mut(&table_id) {
+                    items.retain(|item| item_name != *item.name);
+                }
+                Ok(())
+            }
+            _ => Err(())
         }
     }
 }
@@ -65,7 +82,7 @@ mod tests {
             .insert(10, vec![OrderItem::new("sushi".to_string())]);
 
         let items = svc.get_items(10);
-        assert!(items.is_some());
+        assert!(items.is_ok());
         let items = items.unwrap();
         assert_eq!(1, items.len());
         let item = items.get(0).unwrap();
@@ -78,7 +95,8 @@ mod tests {
 
         let items = svc.get_items(2);
 
-        assert!(items.is_none());
+        assert!(items.is_ok());
+        assert!(items.unwrap().is_empty());
     }
 
     #[test]
@@ -131,7 +149,7 @@ mod tests {
             .write()
             .unwrap()
             .insert(1, vec![OrderItem::new("ramen".to_string())]);
-        svc.cancel_item(1, "ramen".to_string());
+        svc.cancel_item(1, "ramen".to_string()).unwrap();
 
         assert!(rw_map
             .read()
@@ -140,11 +158,12 @@ mod tests {
             .unwrap()
             .is_empty());
     }
-//    #[test]
-//    fn it_rejects_when_table_id_greater_100() {
-//        let (svc, rw_map) = new_service_and_inner_map();
-//
-//        let items = svc.get_items(355);
-//        assert!(items.is_none());
-//    }
+
+    #[test]
+    fn it_rejects_when_table_id_greater_100() {
+        let (svc, _) = new_service_and_inner_map();
+
+        let items = svc.get_items(200);
+        assert!(items.is_err());
+    }
 }

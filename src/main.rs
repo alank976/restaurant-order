@@ -1,6 +1,5 @@
- use restaurant_order::WebServer;
+use restaurant_order::WebServer;
 
 fn main() {
-     let server = WebServer::new().start();
-    //todo block
+    WebServer::new().start();
 }
