@@ -17,11 +17,11 @@ Instead of using an actual database, this application works with in memory hashm
 A stateful struct called `OrderService` wraps the hashmap in order to segregate the responsibilities of HTTP request handling and business logics about order management application.
 With actix-web, it allows share state across multiple worker threads so the `OrderService` is being shared.
 
-In terms of the choice of data structures, HashMap<u8 
+In terms of the choice of data structures, although there is finite number of tables (i.e. 100), scarce store reserves memory such that hash map is chosen. 
+The values are used with `Vector` because the food name can be duplicated by common sense.  
 
 
 ## TODOs
-- [ ] separate and unit test
 - [ ] validate 1 <= table_id <= 100
 - [ ] assign random cooking time to 5-15 min
 - [ ] test with >10 threads of clients
