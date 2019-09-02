@@ -4,7 +4,6 @@ mod tests {
 
     use reqwest;
     use restaurant_order::order_item::OrderItem;
-    use std::borrow::Borrow;
     use reqwest::Client;
 
 
