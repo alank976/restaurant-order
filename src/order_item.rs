@@ -15,4 +15,8 @@ impl OrderItem {
             time_to_cook: Duration::from_secs(60),
         }
     }
+
+    pub fn name(&self) -> &str {
+        self.name.as_str()
+    }
 }
