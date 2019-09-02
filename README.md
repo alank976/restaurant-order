@@ -23,5 +23,4 @@ The values are used with `Vector` because the food name can be duplicated by com
 
 ## TODOs
 - [ ] validate 1 <= table_id <= 100
-- [ ] assign random cooking time to 5-15 min
-- [ ] test with >10 threads of clients
+- [ ] test with >10 threads of clientsfetch
