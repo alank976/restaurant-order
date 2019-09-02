@@ -34,20 +34,53 @@ mod tests {
         assert!(get_items(base_url, &client, 1).is_empty(), "item has not been deleted");
     }
 
-//    fn load_test() {
-//        let mut thread_handles = vec![];
-//        let client = reqwest::Client::new();
-//        let base_url = "http://localhost:8000";
-//
-//
-//        for _ in 0..3 {
-//            thread_handles.push(thread::spawn(move || {
-//                let table_id = rand::thread_rng().gen_range(1, 10);
-//    let url = format!("{}/tables/{}/order-items", base_url, table_id).as_str();
-//                  get_items(url, &client, table_id);
-//            }))
-//        }
-//    }
+    #[bench]
+    fn load_test() {
+        let mut thread_handles = vec![];
+        let client = reqwest::Client::new();
+        let base_url = "http://localhost:8000";
+
+        let nthread = 2;
+
+        for _ in 0..nthread {
+            thread_handles.push(thread::spawn(move || {
+                let client = reqwest::Client::new();
+                let base_url = "http://localhost:8000";
+                for _ in 0..5 {
+                    let table_id = rand::thread_rng().gen_range(1, 10);
+                    order_item(base_url, &client, table_id, "bacon");
+                }
+            }))
+        }
+        for _ in 0..nthread {
+            thread_handles.push(thread::spawn(move || {
+                let client = reqwest::Client::new();
+                let base_url = "http://localhost:8000";
+                for _ in 0..5 {
+                    let table_id = rand::thread_rng().gen_range(1, 10);
+                    get_items(base_url, &client, table_id);
+                }
+            }))
+        }
+        for _ in 0..nthread {
+            thread_handles.push(thread::spawn(move || {
+                let client = reqwest::Client::new();
+                let base_url = "http://localhost:8000";
+                for _ in 0..5 {
+                    let table_id = rand::thread_rng().gen_range(1, 10);
+                    cancel_order(base_url, &client, table_id, "bacon")
+                }
+            }))
+        }
+
+        for h in thread_handles {
+            h.join().unwrap();
+        }
+
+        for i in 1..11 {
+            println!("table {} has items: {:?}", i, get_items(base_url, &client, i));
+        }
+    }
 
     fn order_item(base_url: &str, client: &Client, table_id: u8, item_name: &str) {
         let url = format!("{}/tables/{}/order-items", base_url, table_id);
