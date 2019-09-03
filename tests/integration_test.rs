@@ -36,6 +36,10 @@ mod tests {
 
     #[test]
     fn load_test() {
+        let server_thread = thread::spawn(move || WebServer::new().start());
+
+        thread::sleep(Duration::from_secs(1));
+
         let mut thread_handles = vec![];
         let client = reqwest::Client::new();
         let base_url = "http://localhost:8000";
