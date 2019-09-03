@@ -31,4 +31,4 @@ The values are used with `Vector` because the food name can be duplicated by com
 
 ## clients and server interaction
 - done in integration test for happy path: `cargo test`
-- load test with > 10 threads for sort of benchmark `cargo bench`
+- load test with > 10 threads for sort of benchmark `cargo test`

@@ -34,7 +34,7 @@ mod tests {
         assert!(get_items(base_url, &client, 1).is_empty(), "item has not been deleted");
     }
 
-    #[bench]
+    #[test]
     fn load_test() {
         let mut thread_handles = vec![];
         let client = reqwest::Client::new();
