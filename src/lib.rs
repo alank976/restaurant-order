@@ -67,11 +67,8 @@ pub mod clients {
         let base_url = "http://localhost:8000";
 
         let now = Instant::now();
-        let mut thread_handles = vec![];
         for _ in 0..n_thread_per_action {
             thread_handles.push(thread::spawn(move || {
-                let client = reqwest::Client::new();
-                let base_url = "http://localhost:8000";
                 for _ in 0..n_action_per_thread {
                     let table_id = rand::thread_rng().gen_range(table_range.0, table_range.1);
                     get_items(base_url, &client, table_id);
@@ -81,8 +78,6 @@ pub mod clients {
 
         for _ in 0..n_thread_per_action {
             thread_handles.push(thread::spawn(move || {
-                let client = reqwest::Client::new();
-                let base_url = "http://localhost:8000";
                 for _ in 0..n_action_per_thread {
                     let table_id = rand::thread_rng().gen_range(table_range.0, table_range.1);
                     order_item(base_url, &client, table_id, "bacon");
@@ -92,8 +87,6 @@ pub mod clients {
 
         for _ in 0..n_thread_per_action {
             thread_handles.push(thread::spawn(move || {
-                let client = reqwest::Client::new();
-                let base_url = "http://localhost:8000";
                 for _ in 0..n_action_per_thread {
                     let table_id = rand::thread_rng().gen_range(table_range.0, table_range.1);
                     cancel_order(base_url, &client, table_id, "bacon");
