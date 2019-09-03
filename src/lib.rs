@@ -63,12 +63,12 @@ pub mod clients {
 
     pub fn clients_busy_with_orders(n_thread_per_action: u64, n_action_per_thread: u64, table_range: (u8, u8)) {
         let mut thread_handles = vec![];
-        let client = reqwest::Client::new();
         let base_url = "http://localhost:8000";
 
         let now = Instant::now();
         for _ in 0..n_thread_per_action {
             thread_handles.push(thread::spawn(move || {
+                let client = reqwest::Client::new();
                 for _ in 0..n_action_per_thread {
                     let table_id = rand::thread_rng().gen_range(table_range.0, table_range.1);
                     get_items(base_url, &client, table_id);
@@ -78,6 +78,7 @@ pub mod clients {
 
         for _ in 0..n_thread_per_action {
             thread_handles.push(thread::spawn(move || {
+                let client = reqwest::Client::new();
                 for _ in 0..n_action_per_thread {
                     let table_id = rand::thread_rng().gen_range(table_range.0, table_range.1);
                     order_item(base_url, &client, table_id, "bacon");
@@ -87,6 +88,7 @@ pub mod clients {
 
         for _ in 0..n_thread_per_action {
             thread_handles.push(thread::spawn(move || {
+                let client = reqwest::Client::new();
                 for _ in 0..n_action_per_thread {
                     let table_id = rand::thread_rng().gen_range(table_range.0, table_range.1);
                     cancel_order(base_url, &client, table_id, "bacon");
@@ -99,6 +101,7 @@ pub mod clients {
         }
         let time_elapsed = now.elapsed().as_secs();
 
+        let client = reqwest::Client::new();
         for i in (table_range.0)..(table_range.1 + 1) {
             println!("table {} has items: {:?}", i, get_items(base_url, &client, i));
         }
