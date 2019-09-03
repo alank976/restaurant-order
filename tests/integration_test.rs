@@ -1,16 +1,11 @@
 #[cfg(test)]
 mod tests {
-    use test::Bencher;
     use std::thread;
     use std::time::{Duration, Instant};
 
-    use rand::Rng;
-    use reqwest;
-    use reqwest::Client;
 
     use restaurant_order::*;
-    use restaurant_order::order_item::OrderItem;
-    use restaurant_order::clients::clients_busy_with_orders;
+    use restaurant_order::clients::*;
 
     #[test]
     fn integration_test() {

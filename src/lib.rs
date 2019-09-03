@@ -67,7 +67,7 @@ pub mod clients {
         let base_url = "http://localhost:8000";
 
         let now = Instant::now();
-
+        let mut thread_handles = vec![];
         for _ in 0..n_thread_per_action {
             thread_handles.push(thread::spawn(move || {
                 let client = reqwest::Client::new();
@@ -96,7 +96,7 @@ pub mod clients {
                 let base_url = "http://localhost:8000";
                 for _ in 0..n_action_per_thread {
                     let table_id = rand::thread_rng().gen_range(table_range.0, table_range.1);
-                    cancel_order(base_url, &client, table_id, "bacon")
+                    cancel_order(base_url, &client, table_id, "bacon");
                 }
             }))
         }
@@ -113,7 +113,7 @@ pub mod clients {
         println!("Clients spent {}s on messing up the above orders.", time_elapsed);
     }
 
-    fn order_item(base_url: &str, client: &Client, table_id: u8, item_name: &str) {
+    pub fn order_item(base_url: &str, client: &Client, table_id: u8, item_name: &str) {
         let url = format!("{}/tables/{}/order-items", base_url, table_id);
         let resp = client
             .post(url.as_str())
@@ -123,7 +123,7 @@ pub mod clients {
         assert!(resp.status().is_success());
     }
 
-    fn get_items(base_url: &str, client: &Client, table_id: u8) -> Vec<OrderItem> {
+    pub fn get_items(base_url: &str, client: &Client, table_id: u8) -> Vec<OrderItem> {
         let url = format!("{}/tables/{}/order-items", base_url, table_id);
         let mut resp = client
             .get(url.as_str())
@@ -134,7 +134,7 @@ pub mod clients {
         body
     }
 
-    fn cancel_order(base_url: &str, client: &Client, table_id: u8, item_name: &str) {
+    pub fn cancel_order(base_url: &str, client: &Client, table_id: u8, item_name: &str) {
         let url = format!("{}/tables/{}/order-items/{}", base_url, table_id, item_name);
         let resp = client
             .delete(url.as_str())

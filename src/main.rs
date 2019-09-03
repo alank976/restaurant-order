@@ -4,7 +4,7 @@ use restaurant_order::clients::clients_busy_with_orders;
 
 
 fn main() {
-    run_with_client();
+    raw_run();
 }
 
 fn raw_run() {
