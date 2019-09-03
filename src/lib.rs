@@ -61,7 +61,7 @@ pub mod clients {
     use std::time::Instant;
     use crate::order_item::OrderItem;
 
-    pub fn clients_busy_with_orders(n_thread_per_action: u8, n_action_per_thread: u8, table_range: (u8, u8)) {
+    pub fn clients_busy_with_orders(n_thread_per_action: u64, n_action_per_thread: u64, table_range: (u8, u8)) {
         let mut thread_handles = vec![];
         let client = reqwest::Client::new();
         let base_url = "http://localhost:8000";
