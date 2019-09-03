@@ -21,5 +21,16 @@ In terms of the choice of data structures, although there is finite number of ta
 The values are used with `Vector` because the food name can be duplicated by common sense.  
 
 
-## TODOs
-- [ ] test with >10 threads of clientsfetch
+## To run locally
+- `cargo run`
+- default without (benchmarking) clients
+- HTTP server is hosted at `http://localhost:8000`
+- endpoints are:
+  - `GET /tables/{id}/order-items` to get ordered items of a table
+  - `POST /tables/{id}/order-items` create order for a table
+  - `DELETE /tables/{id}/order-items/{name}`
+- To run with clients, please go to `load_test()` or switch the main fn to `run_with_client()`
+
+## clients and server interaction
+- done in integration test for happy path: `cargo test`
+- load test with > 10 threads for sort of benchmark `cargo test`
